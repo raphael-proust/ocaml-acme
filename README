@@ -1,0 +1,15 @@
+%ocaml-acme: OCaml library for working with acme
+%Raphaël Proust
+%2014
+
+`ocaml-acme` is a library for writing applications that communicate with the `acme(1)` text editor through the `acme(4)` 9p interface.
+
+#License
+
+As detailed in the `LICENSE` file, `ocaml-acme` is distributed under the BSD license. If you need another license, feel free to ask.
+
+
+#Roadmap
+
+- addressing files in `$NAMESPACE/acme`
+- routines for handling windows directly
