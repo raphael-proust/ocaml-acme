@@ -40,3 +40,21 @@ type ctl_msg =
 
 val string_of_ctl_msg: ctl_msg -> string
 val string_of_ctl_msgs: ctl_msg list -> string
+
+
+module Idx : sig
+	type entry = {
+		wid: string; (*TODO: merge *)
+		tag_lenght: int;
+		body_lenght:int;
+		is_dir: bool;
+		is_dirty: bool;
+		tag_line: string;
+	}
+	type t = entry list
+
+	val filename: entry -> string
+
+	val get: unit -> t
+
+end

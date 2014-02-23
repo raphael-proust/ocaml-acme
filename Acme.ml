@@ -70,3 +70,29 @@ let string_of_ctl_msg = function
 
 let string_of_ctl_msgs msgs =
 	String.concat "" (List.map string_of_ctl_msg msgs)
+
+
+module Idx = struct
+	type entry = {
+		wid: string;
+		tag_lenght: int;
+		body_lenght:int;
+		is_dir: bool;
+		is_dirty: bool;
+		tag_line: string;
+	}
+
+	type t = entry list
+
+	(*NOTE: this assumes the file name does not contain spaces.
+	Alternatively, we could check for ` Del`, but that would be subject to a different instance of the same problem.
+	*)
+	let filename {tag_line} =
+		let u = String.length tag_line in
+		let o = ref 0 in
+		while (!o < u) && (tag_line.[!o] <> ' ') do incr o done;
+		String.sub tag_line 0 !o
+
+	let get () = failwith "TODO" (*TODO: merge before implementing*)
+
+end
