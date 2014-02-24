@@ -1,7 +1,10 @@
+
+module Addr : sig
+
 type re = string
 
 (*As per sam(1) *)
-type addr =
+type t =
 	| Char of int
 	| Line of int
 	| ForwardRE of re
@@ -9,18 +12,21 @@ type addr =
 	| Zero
 	| Dollar
 	| Dot
-	| Plus of addr * addr
-	| Minus of addr * addr
-	| Comma of addr * addr
-	| Semicolon of addr * addr
+	| Plus of t * t
+	| Minus of t * t
+	| Comma of t * t
+	| Semicolon of t * t
 	| Null
 
-val string_of_addr: addr -> string
+val p: t -> string
+
+end
+
+module Ctl : sig
 
 type command = string
-type dirname = string
 
-type ctl_msg =
+type t =
 	| AddrEqDot
 	| Clean
 	| Dirty
@@ -29,7 +35,7 @@ type ctl_msg =
 	| Delete
 	| DotEqAddr
 	| Dump of command
-	| Dumpdir of dirname
+	| Dumpdir of string
 	| Get
 	| Limit
 	| Mark
@@ -38,5 +44,32 @@ type ctl_msg =
 	| Put
 	| Show
 
-val string_of_ctl_msg: ctl_msg -> string
-val string_of_ctl_msgs: ctl_msg list -> string
+val p: t -> string
+val ps: t list -> string
+
+end
+
+module Win : sig
+
+type t
+val compare: t -> t -> int
+val p: t -> string
+val r: string -> t
+val new_: t
+
+type hier =
+	| Addr
+	| Body
+	| Ctl
+	| Data
+	| Errors
+	| Event
+	| Tag
+	| Xdata
+
+val path: t -> hier -> string
+
+val ls: ?conn:O9pc.t -> ?user:string -> unit -> t list
+val current: unit -> t
+
+end

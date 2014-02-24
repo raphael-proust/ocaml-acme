@@ -9,7 +9,7 @@ LIBXOBJ = $(patsubst %.ml,%.cmx,$(SRC))
 LIBCMI = $(patsubst %.ml,%.cmi,$(SRC))
 LIBA = $(patsubst %.ml,%.a,$(SRC))
 
-REQUIRES=
+REQUIRES=o9p
 
 all: $(LIB) $(LIBX)
 
