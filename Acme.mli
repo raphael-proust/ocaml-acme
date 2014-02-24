@@ -73,3 +73,20 @@ val ls: ?conn:O9pc.t -> ?user:string -> unit -> t list
 val current: unit -> t
 
 end
+
+module Idx : sig
+	type entry = {
+		win: Win.t;
+		tag_length: int;
+		body_length:int;
+		is_dir: bool;
+		is_dirty: bool;
+		tag_line: string;
+	}
+	type t = entry list
+
+	val filename: entry -> string
+
+         val get : ?conn:O9pc.t -> ?user:string -> unit -> t
+
+end

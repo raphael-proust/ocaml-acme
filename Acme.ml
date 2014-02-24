@@ -132,3 +132,65 @@ let ls ?conn ?user () =
 let current () = Sys.getenv "winid"
 
 end
+
+module Idx = struct
+	type entry = {
+		win: Win.t;
+		tag_length: int;
+		body_length:int;
+		is_dir: bool;
+		is_dirty: bool;
+		tag_line: string;
+	}
+
+	type t = entry list
+
+	(*NOTE: this assumes the file name does not contain spaces.
+	Alternatively, we could check for ` Del`, but that would be subject to a different instance of the same problem.
+	*)
+	let filename {tag_line} =
+		let o = String.index tag_line ' ' in
+		String.sub tag_line 0 o
+
+	let get ?conn ?user () =
+		let conn = match conn with
+			| None -> O9pc.connect (Printf.sprintf "%s/acme" namespace)
+			| Some conn -> conn
+		in
+		let fid = O9pc.attach conn ?user "" in
+		let fid = O9pc.walk conn fid ~reuse:() "index" in
+		let io = O9pc.fopen conn fid O9pc.oREAD in
+		let rec read_all acc offset =
+			let data = O9pc.read conn fid io ~offset:(Int64.of_int offset) 4096l in
+			if data = "" then (*ALT: String.length data < 4096*)
+				acc
+			else
+				(*TODO: change O9pc to accept a buffer as argument*)
+				read_all (acc ^ data) (offset + String.length data)
+		in
+		let data = read_all "" 0 in
+		O9pc.clunk conn fid;
+		let bool_of_int i = match i with
+			| 1 -> true
+			| 0 -> false
+			| _ -> assert false
+		in
+		let rec parse acc offset =
+			try
+				let line_end = String.index_from data offset '\n' in
+				let entry = {
+					win = Win.r (String.trim (String.sub data (offset + (0*12)) 11));
+					tag_length = int_of_string (String.trim (String.sub data (offset + (1*12)) 11));
+					body_length = int_of_string (String.trim (String.sub data (offset + (2*12)) 11));
+					is_dir = bool_of_int (int_of_string (String.trim (String.sub data (offset + (3*12)) 11)));
+					is_dirty = bool_of_int (int_of_string (String.trim (String.sub data (offset + (4*12)) 11)));
+					tag_line = String.sub data (offset + (5*12)) (line_end - offset - (5*12) -1);
+				} in
+				parse (entry :: acc) (line_end + 1)
+			with
+				Not_found -> acc
+		in
+		parse [] 0
+
+
+end
