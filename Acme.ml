@@ -1,5 +1,11 @@
 
-let namespace = Sys.getenv "NAMESPACE"
+let namespace =
+	try
+		Sys.getenv "NAMESPACE"
+	with
+		| Not_found ->
+			prerr "Environment variable NAMESPACE not found";
+			exit 2
 
 module Addr = struct
 
