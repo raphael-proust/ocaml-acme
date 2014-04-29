@@ -1,4 +1,6 @@
 
+module Env = struct
+
 let namespace =
 	try
 		Sys.getenv "NAMESPACE"
@@ -6,6 +8,8 @@ let namespace =
 		| Not_found ->
 			prerr_string "Environment variable NAMESPACE not found\n";
 			exit 2
+
+end
 
 module Addr = struct
 
@@ -119,7 +123,7 @@ let path t h = t ^ "/" ^ string_of_hier h
 
 let ls ?conn ?user () =
 	let conn = match conn with
-		| None -> O9pc.connect (Printf.sprintf "%s/acme" namespace)
+		| None -> O9pc.connect (Printf.sprintf "%s/acme" Env.namespace)
 		| Some conn -> conn
 	in
 	let fid = O9pc.attach conn ?user "" in
@@ -160,7 +164,7 @@ module Idx = struct
 
 	let get ?conn ?user () =
 		let conn = match conn with
-			| None -> O9pc.connect (Printf.sprintf "%s/acme" namespace)
+			| None -> O9pc.connect (Printf.sprintf "%s/acme" Env.namespace)
 			| Some conn -> conn
 		in
 		let fid = O9pc.attach conn ?user "" in

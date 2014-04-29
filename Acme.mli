@@ -1,3 +1,8 @@
+module Env: sig
+
+val namespace: string
+
+end
 
 module Addr : sig
 
