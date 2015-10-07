@@ -1,6 +1,6 @@
 name = "acme"
 version = "0.1"
 description = "Library for the acme(4) 9p interface to the acme(1) editor"
-requires = ""
+requires = "o9p"
 archive(byte) = "Acme.cma"
 archive(native) = "Acme.cmxa"
