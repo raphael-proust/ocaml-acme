@@ -2,8 +2,21 @@
 module Env = struct
 
 let namespace =
+	let nsfromdisplay () =
+		let display = Sys.getenv "DISPLAY" in
+		let display = Str.global_replace (Str.regexp "\\.0$") "" display in
+		let display = Str.global_replace (Str.regexp_string "/") "_" display in
+		"/tmp/ns." ^ (Unix.getlogin ()) ^ "." ^ display
+	in
+	let getns () =
+		try
+			Sys.getenv "NAMESPACE"
+		with
+			| Not_found ->
+				nsfromdisplay ()
+	in
 	try
-		Sys.getenv "NAMESPACE"
+		getns ()
 	with
 		| Not_found ->
 			prerr_string "Environment variable NAMESPACE not found\n";
